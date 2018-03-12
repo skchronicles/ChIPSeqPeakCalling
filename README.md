@@ -18,6 +18,8 @@ BCP is installed on [Biowulf.](https://hpc.nih.gov/apps/peakranger.html)
     --control {control.bam} \
     --format bam \
     --output bcp_results
+    
+*We can also do nr, lc, ranger. ccat may be useful for broad peaks. nr and lc can get use some QC stats. Also check /data/CCBR_Pipeliner/db/PipeDB/bin/BCP_v1.1 ... refer /data/CCBR_Pipeliner/db/PipeDB/bin/BCP_v1.1/manual.pdf to run BCP_TF. This may be an older version of the BCP tool, which we should look into it and rule it out!*
 
 
 ## 2. MAC2 
@@ -45,6 +47,7 @@ or without control samples.MAC2 is installed on [Biowulf.](https://hpc.nih.gov/a
     --outdir {macsn_dir}/{wildcards.group} \
     -B -q 0.01
 
+*need to use the --nomodel --extsize $extsize. get extsize by running phantompeakqualtools ...something like this--> Rscript /data/CCBR_Pipeliner/3.0/Pipeliner/Results-template/Scripts/phantompeakqualtools/run_spp_nodups.R -c=$bamfile -p=${NTHREADS} -savp=${CC_PLOT} -out=${CC_SCORES}... the CC_Scores files will have the peaks, pick the first one for extsize*
 
 
 ## 3. SISSRS
@@ -60,6 +63,8 @@ can be found on it's [homepage.](https://dir.nhlbi.nih.gov/papers/lmi/epigenomes
      -o {output-file} \
      -s {genome-size}
    * {genome-size} is the effective genome size (or length): e.g. 3080436051 for hg18
+  
+*effective or mappable genome size is actually the genome size minus the Ns.. you can write a script to get this for hg18,hg38,mm9,mm10. This project seems abandoned to me... may not be worthwhile digging too much into SISSRs*
 
 ## 4. GEM 
 ##### Description: 
@@ -81,6 +86,8 @@ GEM is installed on [Biowulf.](https://hpc.nih.gov/apps/gem.html)
     --ctrl SRX000543_mES_GFP.bed \
     --f BED \
     --out mouseCTCF --k_min 6 --k_max 13
+    
+* looks good ... does it take bams? *
 
 
 ## 5. MUSIC
@@ -115,6 +122,8 @@ MUSIC is installed on [Biowulf.](https://hpc.nih.gov/apps/music.html)
     -step 1.5
    * This code tells MUSIC to identify the enriched regions starting from 1kb smoothing window length upto 16kb with 
    multiplicative factor of 1.5 using the default parameters for the remaining parameters. The ERs for each scale are dumped.
+   
+* You will have to generate appropriate mappability files (https://github.com/gersteinlab/MUSIC#multi-mappability-profile-generation) Our read lengths are 100 or 125, so generate for those. Also, make sure you have bowtie2 indices for the genomes. Look at https://github.com/gersteinlab/MUSIC#running-music-with-default-parameters-and-automatic-selection-of-l_p-parameter- to automate parameter selection.*
     
 
 ## 6. PePr
@@ -134,3 +143,6 @@ PePr is installed on [Biowulf.](https://hpc.nih.gov/apps/PePr.html)
     -i input_rep1.bam,input_rep2.bam \
     -f bam \
     -n {expname}
+    
+ * --shiftsize Half the fragment size.. again comes for ppqt... this should be half ext size that we used for macs
+ -f needs to be bampe for PE data...not to worry about this now*
